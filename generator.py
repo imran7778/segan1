@@ -1,5 +1,6 @@
 from __future__ import print_function
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 from tensorflow.contrib.layers import batch_norm, fully_connected, flatten
 from tensorflow.contrib.layers import xavier_initializer
 from ops import *
