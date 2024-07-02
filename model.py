@@ -2,7 +2,7 @@ from __future__ import print_function
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 from tensorflow.keras.layers import BatchNormalization, Dense, Flatten
-from tensorflow.contrib.layers import xavier_initializer
+from tensorflow.keras.initializers import glorot_uniform as xavier_initializer
 from scipy.io import wavfile
 from generator import *
 from discriminator import *
