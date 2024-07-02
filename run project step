@@ -1,0 +1,77 @@
+4)Run project by following commands:
+===Make directory "Data" in segan-master. copy zip of clean and noisy data in it and extract here. 
+=====cd Downloads
+=====cd segan-mster
+=====bash ./prepare_data.sh
+
+Output:
+
+~/Downloads/segan-master/data ~/Downloads/segan-master
+~/Downloads/segan-master
+PREPARING TRAINING DATA...
+--------------------------------------------------
+Processing wav file 11572/11572 data/clean_trainset_wav_16k/p286_072.wav          
+**************************************************
+Total processing and writing time: 567.83652997 s
+
+
+======bash ./train_segan.sh
+
+Output:
+Using device:  /cpu:0
+Creating GAN model
+*** Applying pre-emphasis of 0.95 ***
+*** Building Generator ***
+Biasing downconv in G
+.
+.
+.
+Not clipping D weights
+Initializing optimizers...
+Initializing variables...
+Sampling some wavs to store sample references...
+sample noisy shape:  (100, 16384)
+sample wav shape:  (100, 16384)
+sample z shape:  (100, 8, 1024)
+total examples in TFRecords data/segan.tfrecords: 48650
+Batches per epoch:  486
+[*] Reading checkpoints...
+[!] Load failed
+./train_segan.sh: line 20: 17754 Killed                  CUDA_VISIBLE_DEVICES="1,2,3" python main.py --init_noise_std 0. --save_path segan_allbiased_preemph --init_l1_weight 100. --batch_size 100 --g_nl prelu --save_freq 50 --preemph 0.95 --epoch 86 --bias_deconv True --bias_downconv True --bias_D_conv True
+
+=====Copy segan_v1.1 in segan-mster
+=====copy noisy p226_001.wav to segan-master
+=====bash ./clean_wav.sh p226_001.wav
+
+ Output:
+NPUT NOISY WAV: p226_001.wav
+SAVE PATH: .
+Parsed arguments:  {'deconv_type': 'deconv', 'd_label_smooth': 0.25, 'z_depth': 256, 'preemph': 0.95, 'seed': 111, 'init_noise_std': 0.0, 'synthesis_path': 'dwavegan_samples', 'e2e_dataset': 'data/segan.tfrecords', 'save_freq': 50, 'g_type': 'ae', 'l1_remove_epoch': 150, 'epoch': 150, 'bias_D_conv': True, 'save_path': 'segan_v1.1', 'test_wav': 'p226_001.wav', 'g_learning_rate': 0.0002, 'unrolled_lstm': False, 'z_dim': 256, 'batch_size': 100, 'bias_downconv': True, 'denoise_epoch': 5, 'canvas_size': 16384, 'noise_decay': 0.7, 'g_nl': 'prelu', 'beta_1': 0.5, 'd_learning_rate': 0.0002, 'denoise_lbound': 0.01, 'bias_deconv': True, 'weights': 'SEGAN-41700', 'model': 'gan', 'save_clean_path': '.', 'init_l1_weight': 100.0}
+Using device:  /cpu:0
+Creating GAN model
+*** Applying pre-emphasis of 0.95 ***
+*** Building Generator ***
+Biasing downconv in G
+Downconv (100, 16384, 1) -> (100, 8192, 16)
+.
+.
+.
+Not clipping D weights
+Loading model weights...
+[*] Reading checkpoints...
+[*] Read SEGAN-41700
+preemph test wave with 0.95
+test wave shape:  (36480,)
+test wave min:-0.245889231563  max:0.257478415966
+Cleaning chunk 0 -> 16384
+canvas w shape:  (16384,)
+Cleaning chunk 16384 -> 32768
+canvas w shape:  (16384,)
+Cleaning chunk 32768 -> 36480
+canvas w shape:  (16384,)
+Removing padding of 12672 samples
+c wave min:-0.409334093332  max:0.505620956421
+Done cleaning p226_001.wav and saved to ./p226_001.wav
+
+
+========now your noisy wav will be replace by clean with same name.
