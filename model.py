@@ -1,7 +1,7 @@
 from __future__ import print_function
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
-from tensorflow.contrib.layers import batch_norm, fully_connected, flatten
+from tensorflow.keras.layers import BatchNormalization, Dense, Flatten
 from tensorflow.contrib.layers import xavier_initializer
 from scipy.io import wavfile
 from generator import *
