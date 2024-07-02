@@ -278,9 +278,9 @@ class SEGAN(Model):
         self.d_vars_dict = {}
         self.g_vars_dict = {}
         for var in t_vars:
-            if var.name.startswith('d_'):
+             if 'd_' in var.name:  
                 self.d_vars_dict[var.name] = var
-            if var.name.startswith('g_'):
+             elif 'g_' in var.name:  
                 self.g_vars_dict[var.name] = var
         self.d_vars = list(self.d_vars_dict.values())
         self.g_vars = list(self.g_vars_dict.values())
