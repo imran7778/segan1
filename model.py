@@ -278,13 +278,13 @@ class SEGAN(Model):
         self.d_vars_dict = {}
         self.g_vars_dict = {}
         for var in t_vars:
-             if var.name.startswith('d_'):
+            if 'd_' in var.name:  # Changed from var.name.startswith('d_') to 'd_' in var.name
                 self.d_vars_dict[var.name] = var
                 print(f"Discriminator variable added: {var.name}")
-             elif var.name.startswith('g_'):
+            elif 'g_' in var.name:  # Changed from var.name.startswith('g_') to 'g_' in var.name
                 self.g_vars_dict[var.name] = var
                 print(f"Generator variable added: {var.name}")
-             else:
+            else:
                 print(f"Variable not categorized: {var.name}")
                  
         self.d_vars = list(self.d_vars_dict.values())
