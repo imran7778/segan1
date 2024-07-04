@@ -20,12 +20,12 @@ def de_emph(y, coeff=0.95):
         x[n] = coeff * x[n - 1] + y[n]
     return x
 
-def read_and_decode(filename_queue, canvas_size, preemph=0.):
+def read_and_decode(serialized_example, canvas_size, preemph=0.):  # Changed: use serialized_example as input parameter
     features = tf.parse_single_example(
         serialized_example,
-        features={
-            'wav_raw': tf.FixedLenFeature([], tf.string),
-            'noisy_raw': tf.FixedLenFeature([], tf.string),
+        features={  # Changed: Removed tf prefix from FixedLenFeature and string
+            'wav_raw': tf.io.FixedLenFeature([], tf.string),
+            'noisy_raw': tf.io.FixedLenFeature([], tf.string),
         })
     wave = tf.decode_raw(features['wav_raw'], tf.int32)
     wave.set_shape([canvas_size])
