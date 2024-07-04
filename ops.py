@@ -336,11 +336,11 @@ def average_gradients(tower_grads):
             if g is None:
                 print(f"Warning: No gradient for variable {v.name}")  # Log the variable with no gradient
             else:
-            # Add 0 dim to gradients to represent tower
-            expanded_g = tf.expand_dims(g, 0)
-
-            # Append on a 'tower' dimension that we will average over below
-            grads.append(expanded_g)
+                # Add 0 dim to gradients to represent tower
+                expanded_g = tf.expand_dims(g, 0)
+    
+                # Append on a 'tower' dimension that we will average over below
+                grads.append(expanded_g)
             
         if grads:
         # Build the tensor and average along tower dimension
