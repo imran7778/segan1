@@ -9,7 +9,10 @@ from scipy.io import wavfile
 from data_loader import pre_emph
 
 
-#devices = device_lib.list_local_devices()
+devices = device_lib.list_local_devices()
+print('Available devices:')
+for deviced in devices:
+    print(deviced)
 
 flags = tf.app.flags
 flags.DEFINE_integer("seed",111, "Random seed (Def: 111).")
@@ -77,12 +80,16 @@ def main(_):
     config.gpu_options.allow_growth = True
     config.allow_soft_placement=True
     udevices = []
-    #for device in devices:
-        #if len(devices) > 1 and 'cpu' in device.name:
-            # Use cpu only when we dont have gpus
-            #continue
-        #print('Using device: ', device.name)
-        #udevices.append(device.name)
+    for device in devices:
+        if 'GPU' in device.device_type:
+            print('Using device: ', device.name)
+            udevices.append(device.name)
+
+    # Check if no GPU devices are found
+    if not udevices:
+        print("No GPU devices found. Exiting.")
+        return
+      
     # execute the session
     with tf.Session(config=config) as sess:
         if FLAGS.model == 'gan':
