@@ -74,12 +74,13 @@ def downconv(x, output_dim, kwidth=5, pool=2, init=None, uniform=False,
         if bias_init is not None:
             b = tf.get_variable('b', [output_dim],
                                 initializer=bias_init)
-            conv = tf.reshape(tf.nn.bias_add(conv, b), conv.get_shape())
-        else:
-            conv = tf.reshape(conv, conv.get_shape())
-        # reshape back to 1d
-        conv = tf.reshape(conv, conv.get_shape().as_list()[:2] +
-                          [conv.get_shape().as_list()[-1]])
+            conv = tf.nn.bias_add(conv, b)
+            # Commented out the following reshape line since bias_add handles the shape
+            # conv = tf.reshape(tf.nn.bias_add(conv, b), conv.get_shape())
+        # Changed: Use tf.shape for dynamic shape handling instead of conv.get_shape()
+        conv_shape = tf.shape(conv)
+        # Reshape back to 1d with dynamic batch size
+        conv = tf.reshape(conv, [conv_shape[0], conv_shape[1], conv_shape[3]])  # Changed: Ensure dynamic batch size handling
         return conv
 
 # https://github.com/carpedm20/lstm-char-cnn-tensorflow/blob/master/models/ops.py
