@@ -140,6 +140,16 @@ class SEGAN(Model):
                                                             var_list=self.d_vars)
                           g_grads = g_opt.compute_gradients(self.g_losses[-1],
                                                             var_list=self.g_vars)
+                          # Logging for None gradients (Discriminator)
+                          for grad, var in d_grads:  # Change start
+                              if grad is None:
+                                  print(f"Warning: Discriminator gradient for variable {var.name} is None")  # Change end
+
+                          # Logging for None gradients (Generator)
+                          for grad, var in g_grads:  # Change start
+                              if grad is None:
+                                  print(f"Warning: Generator gradient for variable {var.name} is None")  # Change end
+
                           all_d_grads.append(d_grads)
                           all_g_grads.append(g_grads)
 
@@ -284,6 +294,9 @@ class SEGAN(Model):
             elif 'g_' in var.name:  # Changed from var.name.startswith('g_') to 'g_' in var.name
                 self.g_vars_dict[var.name] = var
                 print(f"Generator variable added: {var.name}")
+            elif 'dense' in var.name:  # New condition for dense layer variables
+                self.d_vars_dict[var.name] = var
+                print(f"Discriminator variable added: {var.name}")  # New condition end
             else:
                 print(f"Variable not categorized: {var.name}")
                  
