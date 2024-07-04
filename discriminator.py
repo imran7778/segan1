@@ -72,7 +72,9 @@ def discriminator(self, wave_in, reuse=False):
                     print()
             if not reuse:
                 print('discriminator deconved shape: ', hi.get_shape())
-            hi_f = Flatten()(hi)
+            hi_shape = hi.get_shape().as_list()
+            hi_f = tf.reshape(hi, [batch_size, -1])  # Use tf.reshape to flatten the tensor
+
             #hi_f = tf.nn.dropout(hi_f, self.keep_prob_var)
             d_logit_out = conv1d(hi, kwidth=1, num_kernels=1,
                                  init=tf.truncated_normal_initializer(stddev=0.02),
