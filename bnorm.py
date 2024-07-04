@@ -23,7 +23,7 @@ class VBN(object):
             self.name = name
             self.mean = tf.reduce_mean(x, [0, 1], keep_dims=True)
             self.mean_sq = tf.reduce_mean(tf.square(x), [0, 1], keep_dims=True)
-            self.batch_size = int(x.get_shape()[0])
+            self.batch_size = tf.shape(x)[0]
             assert x is not None
             assert self.mean is not None
             assert self.mean_sq is not None
@@ -34,7 +34,7 @@ class VBN(object):
 
         shape = x.get_shape().as_list()
         with tf.variable_scope(self.name) as scope:
-            new_coeff = 1. / (self.batch_size + 1.)
+            new_coeff = 1. / (tf.cast(self.batch_size, tf.float32) + 1.)
             old_coeff = 1. - new_coeff
             new_mean = tf.reduce_mean(x, [0, 1], keep_dims=True)
             new_mean_sq = tf.reduce_mean(tf.square(x), [0, 1], keep_dims=True)
