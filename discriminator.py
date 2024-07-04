@@ -80,6 +80,8 @@ def discriminator(self, wave_in, reuse=False):
                                  init=tf.truncated_normal_initializer(stddev=0.02),
                                  name='logits_conv')
             d_logit_out = tf.squeeze(d_logit_out)
+            d_logit_out = tf.reshape(d_logit_out, [batch_size, -1])  # Ensure shape is known before Dense layer
+
                 
             with tf.variable_scope('d_dense'):
                 d_logit_out = Dense(1, activation=None)(d_logit_out) 
