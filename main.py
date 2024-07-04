@@ -76,7 +76,7 @@ def main(_):
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     config.allow_soft_placement=True
-    #udevices = []
+    udevices = []
     #for device in devices:
         #if len(devices) > 1 and 'cpu' in device.name:
             # Use cpu only when we dont have gpus
