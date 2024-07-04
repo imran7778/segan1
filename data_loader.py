@@ -21,19 +21,18 @@ def de_emph(y, coeff=0.95):
     return x
 
 def read_and_decode(filename_queue, canvas_size, preemph=0.):
-    reader = tf.TFRecordReader()
-    _, serialized_example = reader.read(filename_queue)
     features = tf.parse_single_example(
-            serialized_example,
-            features={
-                'wav_raw': tf.FixedLenFeature([], tf.string),
-                'noisy_raw': tf.FixedLenFeature([], tf.string),
-            })
+        serialized_example,
+        features={
+            'wav_raw': tf.FixedLenFeature([], tf.string),
+            'noisy_raw': tf.FixedLenFeature([], tf.string),
+        }
+    )  # Changed: Removed the reader and reading from filename_queue
     wave = tf.decode_raw(features['wav_raw'], tf.int32)
-    wave.set_shape(canvas_size)
+    wave.set_shape([canvas_size])  # Changed: Added brackets around canvas_size
     wave = (2./65535.) * tf.cast((wave - 32767), tf.float32) + 1.
     noisy = tf.decode_raw(features['noisy_raw'], tf.int32)
-    noisy.set_shape(canvas_size)
+    noisy.set_shape([canvas_size])  # Changed: Added brackets around canvas_size
     noisy = (2./65535.) * tf.cast((noisy - 32767), tf.float32) + 1.
 
     if preemph > 0:
