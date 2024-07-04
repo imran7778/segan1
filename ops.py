@@ -343,13 +343,13 @@ def average_gradients(tower_grads):
                 grads.append(expanded_g)
             
         if grads:
-        # Build the tensor and average along tower dimension
-        grad = tf.concat(grads, 0)
-        grad = tf.reduce_mean(grad, 0)
-
-        # The Variables are redundant because they are shared across towers
-        # just return first tower's pointer to the Variable
-        v = grad_and_vars[0][1]
-        grad_and_var = (grad, v)
-        average_grads.append(grad_and_var)
+            # Build the tensor and average along tower dimension
+            grad = tf.concat(grads, 0)
+            grad = tf.reduce_mean(grad, 0)
+    
+            # The Variables are redundant because they are shared across towers
+            # just return first tower's pointer to the Variable
+            v = grad_and_vars[0][1]
+            grad_and_var = (grad, v)
+            average_grads.append(grad_and_var)
     return average_grads
