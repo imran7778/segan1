@@ -19,7 +19,7 @@ def discriminator(self, wave_in, reuse=False):
         elif len(in_dims) < 2 or len(in_dims) > 3:
             raise ValueError('Discriminator input must be 2-D or 3-D')
 
-        batch_size = int(wave_in.get_shape()[0])
+        batch_size = tf.shape(wave_in)[0]
 
         # set up the disc_block function
         with tf.variable_scope('d_model') as scope:
