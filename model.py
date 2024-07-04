@@ -182,8 +182,8 @@ class SEGAN(Model):
         self.gtruth_noisy.append(noisybatch)
 
         # add channels dimension to manipulate in D and G
-        wavbatch = tf.expand_dims(self.get_wav, -1)  # Changed: Use self.get_wav
-        noisybatch = tf.expand_dims(self.get_noisy, -1)  # Changed: Use self.get_noisy
+        wavbatch = tf.expand_dims(self.get_wav, -1)
+        noisybatch = tf.expand_dims(self.get_noisy, -1)
         # by default leaky relu is used
         do_prelu = False
         if self.g_nl == 'prelu':
