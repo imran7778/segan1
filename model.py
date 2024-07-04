@@ -161,17 +161,20 @@ class SEGAN(Model):
 
     def build_model_single_gpu(self, gpu_idx):
         if gpu_idx == 0:
-            # Changed: Create the dataset and iterator for input pipeline using tf.compat.v1
+            # Create the dataset and iterator for input pipeline using tf.compat.v1
             dataset = tf.compat.v1.data.TFRecordDataset(self.e2e_dataset)
             dataset = dataset.map(lambda record: read_and_decode(record, self.canvas_size, self.preemph))
             dataset = dataset.shuffle(buffer_size=1000 + 3 * self.batch_size).batch(self.batch_size).repeat()
     
-            # Changed: Create an iterator for the dataset
+            # Create an iterator for the dataset
             iterator = tf.compat.v1.data.make_initializable_iterator(dataset)
             self.iterator = iterator
-            self.get_wav, self.get_noisy = iterator.get_next()  # Changed: Get next batch
+            self.get_wav, self.get_noisy = iterator.get_next()  # Get next batch
+    
+        # Use self.get_wav and self.get_noisy
+        wavbatch = tf.expand_dims(self.get_wav, -1)
+        noisybatch = tf.expand_dims(self.get_noisy, -1)
 
-        
         if gpu_idx == 0:
             self.Gs = []
             self.zs = []
