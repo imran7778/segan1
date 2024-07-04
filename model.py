@@ -161,20 +161,17 @@ class SEGAN(Model):
 
     def build_model_single_gpu(self, gpu_idx):
         if gpu_idx == 0:
-            # create the nodes to load for input pipeline
-            filename_queue = tf.train.string_input_producer([self.e2e_dataset])
-            self.get_wav, self.get_noisy = read_and_decode(filename_queue,
-                                                           self.canvas_size,
-                                                           self.preemph)
-        # load the data to input pipeline
-        wavbatch, \
-        noisybatch = tf.train.shuffle_batch([self.get_wav,
-                                             self.get_noisy],
-                                             batch_size=self.batch_size,
-                                             num_threads=2,
-                                             capacity=1000 + 3 * self.batch_size,
-                                             min_after_dequeue=1000,
-                                             name='wav_and_noisy')
+            # Changed: Create the dataset and iterator for input pipeline using tf.compat.v1
+            dataset = tf.compat.v1.data.TFRecordDataset(self.e2e_dataset)
+            dataset = dataset.map(lambda record: read_and_decode(record, self.canvas_size, self.preemph))
+            dataset = dataset.shuffle(buffer_size=1000 + 3 * self.batch_size).batch(self.batch_size).repeat()
+    
+            # Changed: Create an iterator for the dataset
+            iterator = tf.compat.v1.data.make_initializable_iterator(dataset)
+            self.iterator = iterator
+            self.get_wav, self.get_noisy = iterator.get_next()  # Changed: Get next batch
+
+        
         if gpu_idx == 0:
             self.Gs = []
             self.zs = []
@@ -185,8 +182,8 @@ class SEGAN(Model):
         self.gtruth_noisy.append(noisybatch)
 
         # add channels dimension to manipulate in D and G
-        wavbatch = tf.expand_dims(wavbatch, -1)
-        noisybatch = tf.expand_dims(noisybatch, -1)
+        wavbatch = tf.expand_dims(self.get_wav, -1)  # Changed: Use self.get_wav
+        noisybatch = tf.expand_dims(self.get_noisy, -1)  # Changed: Use self.get_noisy
         # by default leaky relu is used
         do_prelu = False
         if self.g_nl == 'prelu':
@@ -350,7 +347,7 @@ class SEGAN(Model):
             init = tf.global_variables_initializer()
 
         print('Initializing variables...')
-        self.sess.run(init)
+        self.sess.run(self.iterator.initializer)  # Added: Initialize the dataset iterator
         g_summs = [self.d_fk_sum,
                    #self.d_nfk_sum,
                    self.d_fk_loss_sum,
