@@ -347,16 +347,17 @@ class SEGAN(Model):
             init = tf.global_variables_initializer()
 
         print('Initializing variables...')
+        self.sess.run(init)
         self.sess.run(self.iterator.initializer)  # Added: Initialize the dataset iterator
         g_summs = [self.d_fk_sum,
-                   #self.d_nfk_sum,
-                   self.d_fk_loss_sum,
-                   #self.d_nfk_loss_sum,
-                   self.g_loss_sum,
-                   self.g_loss_l1_sum,
-                   self.g_loss_adv_sum,
-                   self.gen_summ,
-                   self.gen_audio_summ]
+               #self.d_nfk_sum,
+               self.d_fk_loss_sum,
+               #self.d_nfk_loss_sum,
+               self.g_loss_sum,
+               self.g_loss_l1_sum,
+               self.g_loss_adv_sum,
+               self.gen_summ,
+               self.gen_audio_summ]
         # if we have prelus, add them to summary
         if hasattr(self, 'alpha_summ'):
             g_summs += self.alpha_summ
