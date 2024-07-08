@@ -71,7 +71,13 @@ def discriminator(self, wave_in, reuse=False):
 
         # Properly flatten hi with known dimensions
         hi_shape = hi.get_shape().as_list()
+        # Ensure the shape is fully defined before passing to Dense layer
         hi_f = tf.reshape(hi, [batch_size, -1])  # Ensures batch_size dimension is dynamic
+
+        # Ensure the shape is known and defined before passing to the Dense layer
+        dense_input_shape = hi_f.get_shape().as_list()
+        if None in dense_input_shape:
+            raise ValueError("Dense layer input shape must be fully defined. Current shape: {}".format(dense_input_shape))
 
         # Use a Dense layer to produce the final output
         with tf.variable_scope('d_dense'):
