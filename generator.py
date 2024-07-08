@@ -211,6 +211,10 @@ class AEGenerator(object):
                                      init=tf.truncated_normal_initializer(stddev=0.02),
                                      bias_init=bias_init,
                                      name='dec_{}'.format(layer_idx))
+                    # Ensure dynamic shape is fully defined before further operations
+                    h_i_dcv_shape = h_i_dcv.get_shape().as_list()
+                    assert None not in h_i_dcv_shape, "Shape contains None dimensions: {}".format(h_i_dcv_shape)
+
                 elif segan.deconv_type == 'nn_deconv':
                     if is_ref:
                         print('-- NN interpolated deconvolution type --')
