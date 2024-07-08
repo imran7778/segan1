@@ -206,8 +206,12 @@ class SEGAN(Model):
             dummy = discriminator(self, dummy_joint,
                                   reuse=False)
 
+        
         G, z  = self.generator(noisybatch, is_ref=False, spk=None,
-                               do_prelu=do_prelu)
+                       do_prelu=do_prelu)
+        G_shape = G.get_shape().as_list()
+        assert None not in G_shape, "Generator output shape contains None dimensions: {}".format(G_shape)
+        
         self.Gs.append(G)
         self.zs.append(z)
 
