@@ -161,8 +161,8 @@ class AEGenerator(object):
                                    bias_init=bias_init,
                                    name='enc_{}'.format(layer_idx))
                 if is_ref:
-                    print('Downconv {} -> {}'.format(h_i.get_shape(),
-                                                     h_i_dwn.get_shape()))
+                    print('Downconv {} output shape: {}'.format(layer_idx, h_i_dwn.get_shape()))
+                    
                 h_i = h_i_dwn
                 if layer_idx < len(segan.g_enc_depths) - 1:
                     if is_ref:
