@@ -68,19 +68,14 @@ def downconv(x, output_dim, kwidth=5, pool=2, init=None, uniform=False,
     if w_init is None:
         w_init = xavier_initializer(uniform=uniform)
     with tf.variable_scope(name):
-        W = tf.get_variable('W', [kwidth, 1, x.get_shape()[-1], output_dim],
+        W = tf.get_variable('W', [kwidth, 1, int(x.get_shape()[-1]), output_dim],
                             initializer=w_init)
         conv = tf.nn.conv2d(x2d, W, strides=[1, pool, 1, 1], padding='SAME')
         if bias_init is not None:
-            b = tf.get_variable('b', [output_dim],
-                                initializer=bias_init)
+            b = tf.get_variable('b', [output_dim], initializer=bias_init)
             conv = tf.nn.bias_add(conv, b)
-            # Commented out the following reshape line since bias_add handles the shape
-            # conv = tf.reshape(tf.nn.bias_add(conv, b), conv.get_shape())
-        # Changed: Use tf.shape for dynamic shape handling instead of conv.get_shape()
         conv_shape = tf.shape(conv)
-        # Reshape back to 1d with dynamic batch size
-        conv = tf.reshape(conv, [conv_shape[0], conv_shape[1], conv_shape[3]])  # Changed: Ensure dynamic batch size handling
+        conv = tf.reshape(conv, [conv_shape[0], conv_shape[1], conv_shape[3]])
         return conv
 
 # https://github.com/carpedm20/lstm-char-cnn-tensorflow/blob/master/models/ops.py
