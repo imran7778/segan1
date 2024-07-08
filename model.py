@@ -130,28 +130,19 @@ class SEGAN(Model):
                                        beta1=config.beta_1)
 
         with tf.variable_scope(tf.get_variable_scope()) as scope:
-          for idx, device in enumerate(self.devices):
-              with tf.device("/%s" % device):
-                  with tf.name_scope("device_%s" % idx):
-                      with variables_on_gpu0():
-                          self.build_model_single_gpu(idx)
-
-                          d_grads = d_opt.compute_gradients(self.d_losses[-1],
-                                                            var_list=self.d_vars)
-                          g_grads = g_opt.compute_gradients(self.g_losses[-1],
-                                                            var_list=self.g_vars)
-                          # Logging for None gradients (Discriminator)
-                          #for grad, var in d_grads:  # Change start
-                              #if grad is None:
-                                  #print(f"Warning: Discriminator gradient for variable {var.name} is None")  # Change end
-
-                          # Logging for None gradients (Generator)
-                          #for grad, var in g_grads:  # Change start
-                              #if grad is None:
-                                  #print(f"Warning: Generator gradient for variable {var.name} is None")  # Change end
-
-                          all_d_grads.append(d_grads)
-                          all_g_grads.append(g_grads)
+            for idx, device in enumerate(self.devices):
+                with tf.device("/%s" % device):
+                    with tf.name_scope("device_%s" % idx):
+                        with variables_on_gpu0():
+                            self.build_model_single_gpu(idx)
+        
+                            d_grads = d_opt.compute_gradients(self.d_losses[-1],
+                                                              var_list=self.d_vars)
+                            g_grads = g_opt.compute_gradients(self.g_losses[-1],
+                                                              var_list=self.g_vars)
+                            all_d_grads.append(d_grads)
+                            all_g_grads.append(g_grads)
+                            tf.get_variable_scope().reuse_variables()
 
         avg_d_grads = average_gradients(all_d_grads)
         avg_g_grads = average_gradients(all_g_grads)
